@@ -8,19 +8,50 @@
 
 import UIKit
 import CoreLocation
-
+import CoreMotion
 
 class ViewController: UIViewController, CLLocationManagerDelegate {
     
-    
     let locationManager = CLLocationManager()
+    let motionManager = CMMotionManager()
     
     override func viewDidLoad() {
+        var oldX = 0
+        var oldY = 0
+        var oldZ = 0
+        
+        
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         println("loaded ok")
  
-        // location function stuff
+        // accelerometer stuff
+        if motionManager.accelerometerAvailable {
+            
+            
+            motionManager.accelerometerUpdateInterval = 0.01
+            motionManager.startAccelerometerUpdatesToQueue(NSOperationQueue.mainQueue()) {
+                [weak self] (data: CMAccelerometerData!, error: NSError!) in
+                
+                var newX = Int(data.acceleration.x * 10)
+                var newY = Int(data.acceleration.y * 10)
+                var newZ = Int(data.acceleration.z * 10)
+                
+               
+                if( newX != oldX || newY != oldY || newZ != oldZ) {
+                  
+                    oldX = newX
+                    oldY = newY
+                    oldZ = newZ
+                    
+                    println("X: \(newX)")
+                    println("Y: \(newY)")
+                    println("Z: \(newZ)")
+        
+                }
+
+            }
+        }
        
     }
 
